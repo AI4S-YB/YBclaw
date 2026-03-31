@@ -1,0 +1,43 @@
+#!/bin/sh
+
+set -eu
+
+message_file=$1
+header=$(
+	sed -n '/^[[:space:]]*#/d; /^[[:space:]]*$/d; 1p' "$message_file" |
+		tr -d '\r'
+)
+
+if [ -z "$header" ]; then
+	exit 0
+fi
+
+case "$header" in
+	Merge\ *|Revert\ *|fixup!\ *|squash!\ *)
+		exit 0
+		;;
+esac
+
+pattern='^(feat|fix|docs|style|refactor|test|chore|build|ci|perf|revert)(\([a-z0-9._/-]+\))?!?: .+'
+
+if printf '%s\n' "$header" | grep -Eq "$pattern"; then
+	exit 0
+fi
+
+cat >&2 <<'EOF'
+invalid commit message.
+
+expected format:
+  type(scope): summary
+  type: summary
+
+allowed types:
+  feat, fix, docs, style, refactor, test, chore, build, ci, perf, revert
+
+examples:
+  feat(agent): add tool loop
+  chore: add commit hooks
+  docs: update README
+EOF
+
+exit 1
