@@ -80,7 +80,8 @@ Go 的标准库对这些场景最直接，单二进制也更适合作为后续 `
 ## 运行
 
 ```bash
-cd /home/xzg/cc-intercept/YBClaw
+git clone https://github.com/AI4S-YB/YBclaw.git
+cd YBclaw
 
 export ANTHROPIC_API_KEY=your_key
 export ANTHROPIC_BASE_URL=https://api.anthropic.com
@@ -90,14 +91,7 @@ go run ./cmd/claw \
   -prompt "看看 README，总结这个项目在做什么"
 ```
 
-如果你要对接当前仓库的透明代理，也可以直接把 `ANTHROPIC_BASE_URL` 指到你的代理前缀。
-
-```bash
-go run ./cmd/claw \
-  -base-url https://api.aicodemirror.com/api/claudecode \
-  -workdir /home/xzg/cc-intercept \
-  -prompt "列出仓库顶层文件，并解释 README 的用途"
-```
+如果你要对接自定义代理或兼容网关，可以通过 `-base-url` 或对应的 `*_BASE_URL` 环境变量指定服务地址。
 
 OpenAI Chat Completions:
 
