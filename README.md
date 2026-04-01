@@ -40,13 +40,18 @@ cd YBclaw
 
 ### Anthropic
 
+通过兼容网关也可以接入其他支持 Anthropic 协议的模型，例如智谱 GLM。
+
 ```bash
 export ANTHROPIC_API_KEY=your_key
+export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
 
 go run ./cmd/claw \
   -provider anthropic \
   -prompt "看看 README，总结这个项目在做什么"
 ```
+
+切换模型只需加 `-model`，例如 `-model glm-5.1`。
 
 ### OpenAI Chat Completions
 
