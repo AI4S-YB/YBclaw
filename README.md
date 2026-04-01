@@ -40,7 +40,7 @@ cd YBclaw
 
 ### Anthropic
 
-通过兼容网关也可以接入其他支持 Anthropic 协议的模型，例如智谱 GLM。
+通过兼容网关也可以接入其他支持 Anthropic 协议的模型，例如智谱 GLM、Moonshot Kimi。
 
 ```bash
 export ANTHROPIC_API_KEY=your_key
@@ -52,6 +52,18 @@ go run ./cmd/claw \
 ```
 
 切换模型只需加 `-model`，例如 `-model glm-5.1`。
+
+Moonshot Kimi 也可以直接这样配置：
+
+```bash
+export ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic
+export ANTHROPIC_API_KEY=sk-xxx
+
+go run ./cmd/claw \
+  -provider anthropic \
+  -model kimi-k2.5 \
+  -prompt "列出当前目录文件"
+```
 
 ### OpenAI Chat Completions
 
