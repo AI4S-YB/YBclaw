@@ -162,6 +162,18 @@ https://api.z.ai/api/coding/paas/v4/messages
 - 不带版本前缀：自动补完整标准路径
 - 已带版本前缀：只补资源名，不重复补版本段
 
+例如：
+
+```bash
+export ANTHROPIC_BASE_URL="https://api.z.ai/api/anthropic"
+```
+
+会自动请求：
+
+```text
+https://api.z.ai/api/anthropic/v1/messages
+```
+
 ## Quick Start
 
 先拉代码并进入项目目录：
@@ -193,6 +205,18 @@ export ANTHROPIC_BASE_URL="https://api.z.ai/api/coding/paas/v4"
 go run ./cmd/claw \
   -provider anthropic \
   -prompt "当前的电脑配置如何"
+```
+
+Anthropic 兼容网关示例：
+
+```bash
+export ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic
+export ANTHROPIC_API_KEY=YOUR_Z_API_KEY
+
+go run ./cmd/claw \
+  -provider anthropic \
+  -model glm-5.1 \
+  -prompt "列出当前目录文件"
 ```
 
 ### OpenAI Chat Completions
