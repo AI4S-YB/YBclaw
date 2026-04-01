@@ -93,8 +93,9 @@ func (c *OpenAIResponsesClient) buildRequest(req Request) (openAIResponsesReques
 		Instructions:    req.System,
 		MaxOutputTokens: req.MaxTokens,
 	}
-	if len(req.Tools) > 0 {
-		payload.Tools = toOpenAIResponsesTools(req.Tools)
+	tools := normalizedToolDefinitions(req.Tools)
+	if len(tools) > 0 {
+		payload.Tools = toOpenAIResponsesTools(tools)
 		payload.ToolChoice = "auto"
 	}
 
@@ -258,6 +259,7 @@ type openAIChatResponse struct {
 }
 
 func buildOpenAIChatRequest(req Request) (openAIChatRequest, error) {
+	tools := normalizedToolDefinitions(req.Tools)
 	messages, err := buildOpenAIChatMessages(req.System, req.Messages)
 	if err != nil {
 		return openAIChatRequest{}, err
@@ -267,8 +269,8 @@ func buildOpenAIChatRequest(req Request) (openAIChatRequest, error) {
 		Messages:            messages,
 		MaxCompletionTokens: req.MaxTokens,
 	}
-	if len(req.Tools) > 0 {
-		payload.Tools = toOpenAIChatTools(req.Tools)
+	if len(tools) > 0 {
+		payload.Tools = toOpenAIChatTools(tools)
 		payload.ToolChoice = "auto"
 	}
 	return payload, nil

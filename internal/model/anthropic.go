@@ -43,7 +43,10 @@ func (c *AnthropicClient) CreateMessage(ctx context.Context, req Request) (Respo
 		return Response{}, err
 	}
 
-	body, err := json.Marshal(req)
+	requestPayload := req
+	requestPayload.Tools = normalizedToolDefinitions(req.Tools)
+
+	body, err := json.Marshal(requestPayload)
 	if err != nil {
 		return Response{}, fmt.Errorf("marshal request: %w", err)
 	}
