@@ -63,6 +63,53 @@ Go 的标准库对这些场景最直接，单二进制也更适合作为后续 `
 - `openai-chat`
 - `openai-responses`
 
+## 模型配置
+
+`YBclaw` 的模型接入由三部分决定：
+
+- provider
+- model
+- base URL / API key
+
+### 1. provider
+
+通过 `-provider` 或 `CLAW_PROVIDER` 指定：
+
+- `anthropic`
+- `openai-chat`
+- `openai-responses`
+
+### 2. model
+
+通过 `-model` 或 `CLAW_MODEL` 指定具体模型名。
+
+如果不显式指定，会按 provider 使用默认模型：
+
+- `anthropic`
+  - 默认：`claude-sonnet-4-7`
+- `openai-chat`
+  - 默认：`gpt-5.4`
+- `openai-responses`
+  - 默认：`gpt-5.4`
+
+示例：
+
+```bash
+go run ./cmd/claw \
+  -provider anthropic \
+  -model claude-sonnet-4-7 \
+  -prompt "当前的电脑配置如何"
+```
+
+```bash
+go run ./cmd/claw \
+  -provider openai-chat \
+  -model gpt-5.4 \
+  -prompt "列出当前目录文件"
+```
+
+### 3. API key 与 base URL
+
 默认环境变量：
 
 - `anthropic`
@@ -77,11 +124,58 @@ Go 的标准库对这些场景最直接，单二进制也更适合作为后续 `
 - `CLAW_PROVIDER`
 - `CLAW_MODEL`
 
-## 运行
+也可以直接通过命令行覆盖：
+
+- `-api-key`
+- `-base-url`
+
+优先级大致如下：
+
+- 显式命令行参数
+- provider 对应环境变量
+- provider 默认值
+
+### 4. base URL 规则
+
+程序会根据 provider 自动补全请求路径。
+
+默认情况下：
+
+- `anthropic` 会请求 `.../v1/messages`
+- `openai-chat` 会请求 `.../v1/chat/completions`
+- `openai-responses` 会请求 `.../v1/responses`
+
+如果你的 `base URL` 已经带版本前缀，例如：
+
+```bash
+export ANTHROPIC_BASE_URL="https://api.z.ai/api/coding/paas/v4"
+```
+
+那么程序不会再重复补一个 `/v1`，而是会请求：
+
+```text
+https://api.z.ai/api/coding/paas/v4/messages
+```
+
+也就是说：
+
+- 不带版本前缀：自动补完整标准路径
+- 已带版本前缀：只补资源名，不重复补版本段
+
+## Quick Start
+
+先拉代码并进入项目目录：
 
 ```bash
 git clone https://github.com/AI4S-YB/YBclaw.git
 cd YBclaw
+```
+
+如果你要对接自定义代理或兼容网关，可以通过 `-base-url` 或对应的 `*_BASE_URL` 环境变量指定服务地址。
+
+### Anthropic
+
+```bash
 
 export ANTHROPIC_API_KEY=your_key
 export ANTHROPIC_BASE_URL=https://api.anthropic.com
@@ -91,27 +185,35 @@ go run ./cmd/claw \
   -prompt "看看 README，总结这个项目在做什么"
 ```
 
-如果你要对接自定义代理或兼容网关，可以通过 `-base-url` 或对应的 `*_BASE_URL` 环境变量指定服务地址。
+带版本前缀的兼容网关示例：
 
-OpenAI Chat Completions:
+```bash
+export ANTHROPIC_BASE_URL="https://api.z.ai/api/coding/paas/v4"
+
+go run ./cmd/claw \
+  -provider anthropic \
+  -prompt "当前的电脑配置如何"
+```
+
+### OpenAI Chat Completions
 
 ```bash
 export OPENAI_API_KEY=your_key
 
 go run ./cmd/claw \
   -provider openai-chat \
-  -model gpt-4.1 \
+  -model gpt-5.4 \
   -prompt "查看 README，并总结这个项目做了什么"
 ```
 
-OpenAI Responses API:
+### OpenAI Responses API
 
 ```bash
 export OPENAI_API_KEY=your_key
 
 go run ./cmd/claw \
   -provider openai-responses \
-  -model gpt-4.1 \
+  -model gpt-5.4 \
   -prompt "查看 README，并总结这个项目做了什么"
 ```
 

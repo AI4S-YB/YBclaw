@@ -29,9 +29,9 @@ func ParseProvider(value string) (Provider, error) {
 func (p Provider) DefaultModel() string {
 	switch p {
 	case ProviderAnthropic:
-		return "claude-sonnet-4-5"
+		return "claude-sonnet-4-7"
 	case ProviderOpenAIChat, ProviderOpenAIResponse:
-		return "gpt-4.1"
+		return "gpt-5.4"
 	default:
 		return ""
 	}

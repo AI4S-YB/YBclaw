@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"path"
 	"strings"
 	"time"
 )
@@ -93,7 +91,7 @@ func (c *OpenAIResponsesClient) buildRequest(req Request) (openAIResponsesReques
 		Instructions:    req.System,
 		MaxOutputTokens: req.MaxTokens,
 	}
-	tools := normalizedToolDefinitions(req.Tools)
+	tools := normalizedOpenAIToolDefinitions(req.Tools)
 	if len(tools) > 0 {
 		payload.Tools = toOpenAIResponsesTools(tools)
 		payload.ToolChoice = "auto"
@@ -177,16 +175,7 @@ func doOpenAIJSON(client *http.Client, ctx context.Context, endpoint, apiKey str
 }
 
 func buildOpenAIURL(base, endpoint string) (string, error) {
-	u, err := url.Parse(strings.TrimSpace(base))
-	if err != nil {
-		return "", fmt.Errorf("parse base URL: %w", err)
-	}
-	if u.Scheme == "" || u.Host == "" {
-		return "", fmt.Errorf("invalid base URL: %q", base)
-	}
-	u.Path = path.Join("/", strings.TrimPrefix(u.Path, "/"), strings.TrimPrefix(endpoint, "/"))
-	u.RawPath = ""
-	return u.String(), nil
+	return buildVersionAwareURL(base, endpoint)
 }
 
 func parseOpenAIError(statusCode int, body []byte) error {
@@ -259,7 +248,7 @@ type openAIChatResponse struct {
 }
 
 func buildOpenAIChatRequest(req Request) (openAIChatRequest, error) {
-	tools := normalizedToolDefinitions(req.Tools)
+	tools := normalizedOpenAIToolDefinitions(req.Tools)
 	messages, err := buildOpenAIChatMessages(req.System, req.Messages)
 	if err != nil {
 		return openAIChatRequest{}, err

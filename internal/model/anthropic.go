@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"path"
 	"strings"
 	"time"
 )
@@ -89,16 +87,7 @@ func (c *AnthropicClient) httpClient() *http.Client {
 }
 
 func buildMessagesURL(base string) (string, error) {
-	u, err := url.Parse(strings.TrimSpace(base))
-	if err != nil {
-		return "", fmt.Errorf("parse base URL: %w", err)
-	}
-	if u.Scheme == "" || u.Host == "" {
-		return "", fmt.Errorf("invalid base URL: %q", base)
-	}
-	u.Path = path.Join("/", strings.TrimPrefix(u.Path, "/"), "v1/messages")
-	u.RawPath = ""
-	return u.String(), nil
+	return buildVersionAwareURL(base, "/v1/messages")
 }
 
 func parseAnthropicError(statusCode int, body []byte) error {

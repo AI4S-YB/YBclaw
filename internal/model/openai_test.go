@@ -83,7 +83,7 @@ func TestOpenAIChatClientMapsToolCalls(t *testing.T) {
 	client := NewOpenAIChatClient("test-key", server.URL)
 
 	first, err := client.CreateMessage(context.Background(), Request{
-		Model:     "gpt-4.1",
+		Model:     "gpt-5.4",
 		MaxTokens: 256,
 		System:    "You are helpful.",
 		Messages: []Message{
@@ -114,7 +114,7 @@ func TestOpenAIChatClientMapsToolCalls(t *testing.T) {
 	}
 
 	_, err = client.CreateMessage(context.Background(), Request{
-		Model:     "gpt-4.1",
+		Model:     "gpt-5.4",
 		MaxTokens: 256,
 		System:    "You are helpful.",
 		Messages: []Message{
@@ -212,7 +212,7 @@ func TestOpenAIResponsesClientUsesPreviousResponseID(t *testing.T) {
 	client := NewOpenAIResponsesClient("test-key", server.URL)
 
 	first, err := client.CreateMessage(context.Background(), Request{
-		Model:     "gpt-4.1",
+		Model:     "gpt-5.4",
 		MaxTokens: 256,
 		System:    "You are helpful.",
 		Messages: []Message{
@@ -243,7 +243,7 @@ func TestOpenAIResponsesClientUsesPreviousResponseID(t *testing.T) {
 	}
 
 	second, err := client.CreateMessage(context.Background(), Request{
-		Model:     "gpt-4.1",
+		Model:     "gpt-5.4",
 		MaxTokens: 256,
 		System:    "You are helpful.",
 		Messages: []Message{
